@@ -1,16 +1,29 @@
-# Import required libraries
-# Define a function to simulate the stopping strategy
-#   - Accept list of payoffs and stopping threshold (percentage of exploration)
-#   - Simulate observing a percentage of values and record the maximum observed
-#   - Choose the next value better than the maximum observed as the stopping point
-#   - Return the chosen payoff and stopping index
+import csv
 
-# Define a function to save simulation results to a CSV file
-#   - Accept file path and results data
-#   - Write the results to the file
+def simulate_stopping_strategy(payoffs, threshold=0.37):
+    explore_count = int(len(payoffs) * threshold)
+    max_explored = max(payoffs[:explore_count])
+    for idx in range(explore_count, len(payoffs)):
+        if payoffs[idx] > max_explored:
+            return payoffs[idx], idx
+    return payoffs[-1], len(payoffs) - 1
 
-# Main execution (if run directly):
-#   - Parse user inputs for input file path, stopping threshold, and output path
-#   - Load payoff data from the input file
-#   - Simulate the stopping strategy for the given threshold
-#   - Save the results to the specified file
+def save_simulation_results(file_path, results):
+    with open(file_path, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Payoff', 'Index'])
+        writer.writerows(results)
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Simulate stopping strategies.")
+    parser.add_argument("--input", type=str, required=True, help="Input CSV file path with payoffs")
+    parser.add_argument("--threshold", type=float, default=0.37, help="Stopping threshold (default: 37%)")
+    parser.add_argument("--output", type=str, required=True, help="Output CSV file path for simulation results")
+
+    args = parser.parse_args()
+    with open(args.input, mode='r') as file:
+        payoffs = [float(row[0]) for row in csv.reader(file) if row[0] != 'Payoff']
+    results = [simulate_stopping_strategy(payoffs, args.threshold)]
+    save_simulation_results(args.output, results)
