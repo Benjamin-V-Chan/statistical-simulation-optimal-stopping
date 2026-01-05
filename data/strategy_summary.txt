@@ -1,0 +1,5 @@
+37% rule: mean=71.9441, median=83.3027, stddev=18.1401
+Random choice: mean=49.4717, median=49.6672, stddev=9.9984
+Always first: mean=50.0471, median=49.8081, stddev=10.4150
+Always last: mean=49.9887, median=49.9825, stddev=10.0389
+Best by mean payoff: 37% rule
